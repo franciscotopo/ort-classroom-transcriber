@@ -1,6 +1,6 @@
 ---
 name: ort-classroom-transcriber
-description: Turn a recorded university class (password-protected Vimeo showcase, e.g. ORT courses) into clear study notes on a Notion subpage — downloads the video, transcribes it on-device with Whisper, maps what was on screen, cross-checks both, and writes a page with a fixed visual template (definitions, examples, questions, sources, instructivo for hands-on classes). Supports several courses. Use whenever the user asks to summarize, take notes on, or "pasar a Notion" a class, e.g. "/ort-classroom-transcriber ia 01/09", "resumí la clase del 7 de septiembre de Arquitectura", "hacé la clase 4", "procesá la próxima clase", "qué clases faltan", or wants to add a new course, even if they don't say Vimeo or Notion.
+description: Turn a recorded university class (password-protected Vimeo showcase, e.g. ORT courses) into clear study notes on a Notion subpage — downloads the video, transcribes it on-device with Whisper, maps what was on screen, cross-checks both, and writes a page with a fixed visual template (definitions, examples, questions, sources, instructivo for hands-on classes). Also works with a YouTube (or any yt-dlp-supported) link, asking where in Notion to put the page. Supports several courses. Use whenever the user asks to summarize, take notes on, or "pasar a Notion" a class, e.g. "/ort-classroom-transcriber ia 01/09", "resumí la clase del 7 de septiembre de Arquitectura", "hacé la clase 4", "procesá la próxima clase", "qué clases faltan", or pastes a YouTube/video link to turn into notes, or wants to add a new course, even if they don't say Vimeo or Notion.
 ---
 
 # Class notes: Vimeo recording → Notion study page
@@ -40,6 +40,10 @@ Every script picks the course from the `CLASS_NOTES_COURSE` environment variable
 
 ## 1. Pick the class
 
+**From a link (YouTube or any site yt-dlp supports):** if the user gives a video URL instead of a course class, don't use the course config or `vimeo_album.py`. Ask in one question where the page goes: a Notion page link (the notes are created as its subpage). Don't assume a course's `notion_parent_page_id`, even if the video looks related. Then run `prepare.sh <url>` (step 2) — the work dir is `~/.class-notes/work/links/<video id>/` and `meta.txt` has title, channel and upload date for the class card. Name the page after the video title. No cookies are needed for public or unlisted videos; private/members-only ones fail, so tell the user. For a link, run step 3 with `CLASS_NOTES_LANG=auto` in front (the video may not be in Spanish; forcing Spanish makes Whisper translate). Write the notes in Spanish anyway. Skip the rest of this step.
+
+**From a course showcase:**
+
 ~~~
 PY=$(dirname "$(readlink -f "$(which yt-dlp)")")/python
 CLASS_NOTES_COURSE=<course> $PY <skill_dir>/scripts/vimeo_album.py list
@@ -53,7 +57,7 @@ Lists every video (id, date dd-mm-yyyy, minutes). Fetch the course's Notion page
 CLASS_NOTES_COURSE=<course> <skill_dir>/scripts/prepare.sh <dd-mm-yyyy>
 ~~~
 
-Writes `video.mp4`, `f2s/` (one frame every 2 s) and `sheets/sh_NN.jpg` (one frame per minute, tiled 2×2: sheet N covers minutes 4(N-1) to 4N-1, order top-left, top-right, bottom-left, bottom-right).
+Writes `video.mp4`, `f2s/`, plus `tr/subs*.vtt` when a link has human-made Spanish subtitles (the last line prints `subs=`), (one frame every 2 s) and `sheets/sh_NN.jpg` (one frame per minute, tiled 2×2: sheet N covers minutes 4(N-1) to 4N-1, order top-left, top-right, bottom-left, bottom-right).
 
 ## 3. Transcribe in the background
 
@@ -61,7 +65,7 @@ Writes `video.mp4`, `f2s/` (one frame every 2 s) and `sheets/sh_NN.jpg` (one fra
 <skill_dir>/scripts/transcribe_all.sh ~/.class-notes/work/<course>/<dd-mm-yyyy>   # run_in_background
 ~~~
 
-16-minute batches, `nice` priority, 60 s pause between batches — full-speed Whisper makes the laptop fan loud. A 2 h class takes ~40 min. If the user says the computer is noisy, stop it (TaskStop); finished batches are kept and a rerun resumes. Audio never leaves the machine.
+If `tr/subs*.vtt` exists, the script turns the subtitles into the transcript and exits immediately — no Whisper. Otherwise: 16-minute batches, `nice` priority, 60 s pause between batches — full-speed Whisper makes the laptop fan loud. A 2 h class takes ~40 min. If the user says the computer is noisy, stop it (TaskStop); finished batches are kept and a rerun resumes. Audio never leaves the machine.
 
 ## 4. Read the screens while it transcribes
 
@@ -79,7 +83,7 @@ and read `cmp.jpg`. If speech and screen disagree, trust the screen for content 
 
 ## 6. Write the Notion page
 
-Read `references/notion-template.md` and follow it exactly (same icons, colors, heading levels, section order). Create the page with the Notion MCP `notion-create-pages` tool under the course's `notion_parent_page_id`. Then fetch it once to check rendering and fix with `update_content`. Known glitches: inline code inside bold (`**Promesa (`Promise<T>`):**`) comes back as `****` — keep code outside the bold (`**Promesa** (`Promise<T>`)**:**`); dotted names like ASP.NET get auto-linked — put them in backticks; a `\*` next to `**` (e.g. `**A\***`) breaks the bold — write "A\*" outside the bold.
+Read `references/notion-template.md` and follow it exactly (same icons, colors, heading levels, section order). Create the page with the Notion MCP `notion-create-pages` tool under the course's `notion_parent_page_id` (or, for a link, the page the user gave). For a link, the class card's **Fuente** line includes the video URL and channel. Then fetch it once to check rendering and fix with `update_content`. Known glitches: inline code inside bold (`**Promesa (`Promise<T>`):**`) comes back as `****` — keep code outside the bold (`**Promesa** (`Promise<T>`)**:**`); dotted names like ASP.NET get auto-linked — put them in backticks; a `\*` next to `**` (e.g. `**A\***`) breaks the bold — write "A\*" outside the bold.
 
 What goes in, and why:
 - **Concepts first.** Each concept: definition, essentials, an example *from the class*, connection to earlier classes, why it matters, questions students asked with the answer given, and the source (slide numbers + minutes). Course logistics go in their own section at the end, not mixed into concepts.

@@ -6,6 +6,15 @@
 set -uo pipefail
 W="$1"
 DIR="$(cd "$(dirname "$0")" && pwd)"
+# If the video came with human-made subtitles, use them instead of Whisper.
+SUBS=$(ls "$W"/tr/subs*.vtt 2>/dev/null | head -1)
+if [ -n "$SUBS" ] && [ ! -s "$W/tr/t1.txt" ]; then
+  python3 "$DIR/vtt_to_transcript.py" "$SUBS" > "$W/tr/t1.txt" && echo "used subtitles: $SUBS"
+fi
+if [ -n "$SUBS" ] && [ -s "$W/tr/t1.txt" ]; then
+  awk '{if (buf=="") ts=$1; $1=""; buf=buf $0} NR%25==0 {print ts buf; buf=""} END{print ts buf}' "$W/tr/t1.txt" > "$W/tr/compact.txt"
+  echo "DONE $(wc -c < "$W/tr/compact.txt") bytes (subtitles)"; exit 0
+fi
 D=$(ffprobe -v error -show_entries format=duration -of csv=p=0 "$W/video.mp4" | cut -d. -f1)
 i=1
 for st in $(seq 0 960 "$D"); do
@@ -19,5 +28,5 @@ for st in $(seq 0 960 "$D"); do
 done
 # Compact: join short Whisper segments into ~25-line paragraphs, keeping the first timestamp.
 ls "$W"/tr/t*.txt | sort -V | xargs cat \
-  | awk '{ts=$1; $1=""; buf=buf $0} NR%25==0 {print ts buf; buf=""} END{print ts buf}' > "$W/tr/compact.txt"
+  | awk '{if (buf=="") ts=$1; $1=""; buf=buf $0} NR%25==0 {print ts buf; buf=""} END{print ts buf}' > "$W/tr/compact.txt"
 echo "DONE $(wc -c < "$W/tr/compact.txt") bytes"
