@@ -1,6 +1,6 @@
 ---
-name: class-notes
-description: Turn a recorded university class (password-protected Vimeo showcase, e.g. ORT courses) into clear study notes on a Notion subpage — downloads the video, transcribes it on-device with Whisper, maps what was on screen, cross-checks both, and writes a page with a fixed visual template (definitions, examples, questions, sources, instructivo for hands-on classes). Supports several courses. Use whenever the user asks to summarize, take notes on, or "pasar a Notion" a class, e.g. "/class-notes ia 01/09", "resumí la clase del 7 de septiembre de Arquitectura", "hacé la clase 4", "procesá la próxima clase", "qué clases faltan", or wants to add a new course, even if they don't say Vimeo or Notion.
+name: ort-classroom-transcriber
+description: Turn a recorded university class (password-protected Vimeo showcase, e.g. ORT courses) into clear study notes on a Notion subpage — downloads the video, transcribes it on-device with Whisper, maps what was on screen, cross-checks both, and writes a page with a fixed visual template (definitions, examples, questions, sources, instructivo for hands-on classes). Supports several courses. Use whenever the user asks to summarize, take notes on, or "pasar a Notion" a class, e.g. "/ort-classroom-transcriber ia 01/09", "resumí la clase del 7 de septiembre de Arquitectura", "hacé la clase 4", "procesá la próxima clase", "qué clases faltan", or wants to add a new course, even if they don't say Vimeo or Notion.
 ---
 
 # Class notes: Vimeo recording → Notion study page

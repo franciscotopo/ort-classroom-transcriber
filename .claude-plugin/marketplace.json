@@ -1,5 +1,6 @@
 {
-  "name": "franciscotopo",
+  "name": "ort-classroom-transcriber",
+  "description": "Apuntes de clase ORT: Vimeo → Notion, transcripción local.",
   "owner": { "name": "franciscotopo" },
   "plugins": [
     {

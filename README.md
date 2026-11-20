@@ -10,13 +10,13 @@ Dentro de Claude Code:
 
 ```
 /plugin marketplace add franciscotopo/ort-classroom-transcriber
-/plugin install ort-classroom-transcriber@franciscotopo
+/plugin install ort-classroom-transcriber@ort-classroom-transcriber
 ```
 
 Reiniciá Claude Code y después escribí:
 
 ```
-/ort-classroom-transcriber:class-notes configurame todo
+/ort-classroom-transcriber configurame todo
 ```
 
 Claude revisa qué falta (`yt-dlp`, `ffmpeg`, Whisper, Notion, cookies, cursos), lo instala con tu permiso y te pide los datos de tus cursos.
@@ -54,7 +54,7 @@ Decile a Claude *"agregá el curso de Inteligencia Artificial"*: te pide el link
 
 | Pedido | Qué hace |
 |---|---|
-| *"/ort-classroom-transcriber:class-notes ia 01/09"* | Procesa esa clase y crea la página |
+| *"/ort-classroom-transcriber ia 01/09"* | Procesa esa clase y crea la página |
 | *"Resumí la próxima clase de Arquitectura"* | Busca la primera clase sin página |
 | *"¿Qué clases faltan?"* | Compara el showcase con las páginas existentes |
 | *"Agregá el curso de Bases de Datos"* | Suma un curso a la configuración |
@@ -63,7 +63,7 @@ Una clase de 2 h tarda ~45 min (casi todo es transcripción, en tandas con pausa
 
 ## 🎨 Formato de los apuntes
 
-📘 teórica / 💻 práctica · 🗂️ ficha de la clase · 🎯 ideas clave · 📖 definición · 💡 ejemplo · ❓ pregunta en clase · ⚠️ importante para pruebas · 🛠️ instructivo · `Fuente:` diapositivas y minuto. Detalle en [`notion-template.md`](skills/class-notes/references/notion-template.md).
+📘 teórica / 💻 práctica · 🗂️ ficha de la clase · 🎯 ideas clave · 📖 definición · 💡 ejemplo · ❓ pregunta en clase · ⚠️ importante para pruebas · 🛠️ instructivo · `Fuente:` diapositivas y minuto. Detalle en [`notion-template.md`](skills/ort-classroom-transcriber/references/notion-template.md).
 
 Reglas: conceptos primero, nada inventado (lo dudoso va "sin confirmar"), sin nombres de alumnos, material de diapositivas parafraseado.
 
@@ -76,9 +76,9 @@ Reglas: conceptos primero, nada inventado (lo dudoso va "sin confirmar"), sin no
 | `ModuleNotFoundError: mlx_whisper` | `python3 -m pip install --user mlx-whisper` |
 | `command not found: yt-dlp` / `ffmpeg` | `brew install yt-dlp ffmpeg` |
 | Claude no escribe en Notion | `/mcp` → `notion` → Authenticate; verificá acceso a la página del curso |
-| Claude no usa la skill | Empezá el pedido con `/ort-classroom-transcriber:class-notes` |
+| Claude no usa la skill | Empezá el pedido con `/ort-classroom-transcriber` |
 
-Actualizar: `/plugin marketplace update franciscotopo`.
+Actualizar: `/plugin marketplace update ort-classroom-transcriber`.
 
 ## 🔒 Privacidad y uso responsable
 
