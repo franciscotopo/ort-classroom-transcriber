@@ -1,0 +1,10 @@
+{
+  "name": "ort-classroom-transcriber",
+  "version": "1.0.0",
+  "description": "Convierte grabaciones de clases (showcases de Vimeo con contraseña, ej. ORT) en apuntes de estudio en Notion. Transcribe en tu máquina con Whisper.",
+  "author": { "name": "franciscotopo", "url": "https://github.com/franciscotopo" },
+  "homepage": "https://github.com/franciscotopo/ort-classroom-transcriber",
+  "repository": "https://github.com/franciscotopo/ort-classroom-transcriber",
+  "license": "MIT",
+  "keywords": ["ort", "vimeo", "whisper", "notion", "apuntes", "transcripcion"]
+}

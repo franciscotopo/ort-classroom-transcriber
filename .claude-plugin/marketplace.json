@@ -1,0 +1,11 @@
+{
+  "name": "franciscotopo",
+  "owner": { "name": "franciscotopo" },
+  "plugins": [
+    {
+      "name": "ort-classroom-transcriber",
+      "source": "./",
+      "description": "Grabación de clase (Vimeo) → apuntes en Notion, transcripción local con Whisper."
+    }
+  ]
+}
